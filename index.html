@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <meta name="description" content="Audio Player">
+    <meta name="author" content="Hydr10n@GitHub">
+
+    <!-- https://fonts.googleapis.com/icon?family=Material+Icons -->
+    <link rel="stylesheet" href="styles/material-components-web/material-icons.css">
+
+    <!-- https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css -->
+    <link rel="stylesheet" href="styles/material-components-web/material-components-web.min.css">
+
+    <link rel="stylesheet" href="styles/theme.css">
+
+    <link rel="icon" href="assets/images/music_folder_alt.svg">
+    <title>Audio Player</title>
+</head>
+
+<body class="mdc-typography">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+
+    <div>
+        <div id="tooltip-playlist" class="mdc-tooltip" role="tooltip" aria-hidden="true">
+            <div class="mdc-tooltip__surface">Playlist</div>
+        </div>
+        <div id="tooltip-select-audio-files" class="mdc-tooltip" role="tooltip" aria-hidden="true">
+            <div class="mdc-tooltip__surface">Select audio files</div>
+        </div>
+        <div id="tooltip-more-options" class="mdc-tooltip" role="tooltip" aria-hidden="true">
+            <div class="mdc-tooltip__surface">More options</div>
+        </div>
+        <div id="tooltip-toggle-mute-unmute" class="mdc-tooltip" role="tooltip" aria-hidden="true">
+            <div class="mdc-tooltip__surface">Mute/unmute</div>
+        </div>
+        <div id="tooltip-previous" class="mdc-tooltip" role="tooltip" aria-hidden="true">
+            <div class="mdc-tooltip__surface">Previous</div>
+        </div>
+        <div id="tooltip-toggle-play-pause" class="mdc-tooltip" role="tooltip" aria-hidden="true">
+            <div class="mdc-tooltip__surface">Play/pause</div>
+        </div>
+        <div id="tooltip-next" class="mdc-tooltip" role="tooltip" aria-hidden="true">
+            <div class="mdc-tooltip__surface">Next</div>
+        </div>
+    </div>
+
+    <div>
+        <div id="snackbar-audio-play-error" class="mdc-snackbar">
+            <div class="mdc-snackbar__surface" role="status" aria-relevant="additions">
+                <div class="mdc-snackbar__label" aria-atomic="false">Can't play current audio.</div>
+                <div class="mdc-snackbar__actions" aria-atomic="true">
+                    <button type="button" class="mdc-button mdc-snackbar__action">
+                        <div class="mdc-button__ripple"></div>
+                        <span class="mdc-button__label">OK</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div id="dialog-about" class="mdc-dialog">
+            <div class="mdc-dialog__container">
+                <div class="mdc-dialog__surface" role="alertdialog" aria-modal="true" aria-label="About">
+                    <h2 class="mdc-dialog__title">About</h2>
+                    <div class="mdc-dialog__content" style="text-align: center;">
+                        © Hydr10n@GitHub
+                        <br>
+                        Welcome to visit <a href="https://github.com/Hydr10n"
+                            target="_blank">https://github.com/Hydr10n</a>
+                    </div>
+                    <div class="mdc-dialog__actions">
+                        <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
+                            <div class="mdc-button__ripple"></div>
+                            <span class="mdc-button__label">OK</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="mdc-dialog__scrim"></div>
+        </div>
+    </div>
+
+    <aside class="mdc-drawer mdc-drawer--modal">
+        <div class="mdc-drawer__header" style="display: flex; justify-content: space-between; padding-right: 6px;">
+            <h3 class="mdc-drawer__title">Playlist</h3>
+            <button class="mdc-drawer__close mdc-icon-button material-icons" style="align-self: center;"
+                aria-label="Close drawer">close</button>
+        </div>
+        <div class="mdc-drawer__content">
+            <ul id="playlist" class="mdc-list mdc-list--two-line" role="listbox"></ul>
+        </div>
+    </aside>
+
+    <div class="mdc-drawer-scrim"></div>
+
+    <div class="mdc-drawer-app-content">
+        <header class="mdc-top-app-bar mdc-top-app-bar--fixed">
+            <div class="mdc-top-app-bar__row">
+                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+                    <button class="mdc-icon-button material-icons mdc-top-app-bar__navigation-icon"
+                        aria-label="Playlist" aria-describedby="tooltip-playlist">queue_music</button>
+                    <span class="mdc-top-app-bar__title">Audio Player</span>
+                </section>
+                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
+                    <div>
+                        <input id="input-select-audio-files" type="file" accept="audio/*" multiple
+                            style="display: none;" onchange="selectAudioFiles(this)" />
+                        <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button"
+                            aria-label="Select audio files" aria-describedby="tooltip-select-audio-files"
+                            onclick="document.getElementById('input-select-audio-files').click();">folder_open</button>
+                    </div>
+                    <div class="mdc-menu-surface--anchor">
+                        <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Options"
+                            aria-describedby="tooltip-more-options" onclick="showOptions()">more_vert</button>
+                        <div id="menu-options" class="mdc-menu mdc-menu-surface">
+                            <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical"
+                                tabindex="-1">
+                                <li class="mdc-list-item" role="menuitem" onclick="showAbout()">
+                                    <span class="mdc-list-item__ripple"></span>
+                                    <span class="mdc-list-item__text">About</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </header>
+
+        <main id="main-content">
+            <div class="mdc-top-app-bar--fixed-adjust">
+                <div class="audio-player">
+                    <div style="display: flex; flex-direction: column; align-items: center; margin: 32px;">
+                        <img class="img-audio-cover mdc-elevation--z20" src="assets/images/music-icon.svg"
+                            alt="Audio cover">
+                        <span id="text-audio-title" class="mdc-typography--headline6">Unknown title</span>
+                        <span style="text-align: center;">
+                            <span id="text-audio-artists" class="mdc-typography--subtitle1">Unknown artists</span>
+                            <span class="mdc-typography--subtitle1" style="font-weight: bold;">&nbsp·&nbsp</span>
+                            <span id="text-audio-album" class="mdc-typography--subtitle1">Unknown album</span>
+                        </span>
+                    </div>
+
+                    <div style="display: flex;">
+                        <button class="button-toggle-mute-unmute mdc-icon-button" aria-label="Mute/unmute"
+                            aria-describedby="tooltip-toggle-mute-unmute" data-aria-label-on="Mute"
+                            data-aria-label-off="Unmute">
+                            <i class="material-icons mdc-icon-button__icon mdc-icon-button__icon--on">volume_off</i>
+                            <i class="material-icons mdc-icon-button__icon">volume_up</i>
+                        </button>
+                        <div id="slider-volume" class="mdc-slider mdc-slider--discrete" data-step="1">
+                            <div class="mdc-slider__track">
+                                <div class="mdc-slider__track--inactive"></div>
+                                <div class="mdc-slider__track--active">
+                                    <div class="mdc-slider__track--active_fill"></div>
+                                </div>
+                            </div>
+                            <div class="mdc-slider__thumb" role="slider" tabindex="0" aria-label="Volume slider"
+                                aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+                                <div class="mdc-slider__value-indicator-container">
+                                    <div class="mdc-slider__value-indicator">
+                                        <span class="mdc-slider__value-indicator-text">100</span>
+                                    </div>
+                                </div>
+                                <div class="mdc-slider__thumb-knob"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex;">
+                        <h1 id="text-current-time" class="mdc-typography--subtitle1">00:00</h1>
+                        <div id="slider-current-time" class="mdc-slider mdc-slider--disabled">
+                            <div class="mdc-slider__track">
+                                <div class="mdc-slider__track--inactive"></div>
+                                <div class="mdc-slider__track--active">
+                                    <div class="mdc-slider__track--active_fill"></div>
+                                </div>
+                            </div>
+                            <div class="mdc-slider__thumb" role="slider" tabindex="0" aria-label="Audio progress slider"
+                                aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                <div class="mdc-slider__thumb-knob"></div>
+                            </div>
+                        </div>
+                        <h1 id="text-duration" class="mdc-typography--subtitle1">00:00</h1>
+                    </div>
+
+                    <div>
+                        <button class="button-play-previous mdc-icon-button material-icons" disabled
+                            aria-label="Play previous audio" aria-describedby="tooltip-previous"
+                            onclick="playPrevious()">skip_previous</button>
+                        <button class="button-toggle-play-pause mdc-icon-button mdc-button--raised"
+                            style="border-radius: 50%;" disabled aria-label="Play/pause audio"
+                            aria-describedby="tooltip-toggle-play-pause" data-aria-label-on="Play audio"
+                            data-aria-label-off="Pause audio">
+                            <i class="material-icons mdc-icon-button__icon mdc-icon-button__icon--on">pause</i>
+                            <i class="material-icons mdc-icon-button__icon">play_arrow</i>
+                        </button>
+                        <button class="button-play-next mdc-icon-button material-icons" disabled
+                            aria-label="Play next audio" aria-describedby="tooltip-next"
+                            onclick="playNext()">skip_next</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"></script> -->
+    <script src="scripts/material-components-web/material-components-web.min.js"></script>
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.3/jsmediatags.min.js"></script> -->
+    <script src="scripts/jsmediatags/jsmediatags.min.js"></script>
+
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/theme.js"></script>
+    <script src="scripts/menu.js"></script>
+    <script src="scripts/audio-control.js"></script>
+</body>
+
+</html>

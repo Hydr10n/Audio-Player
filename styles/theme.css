@@ -1,0 +1,44 @@
+:root { --mdc-theme-primary: #225780; }
+
+body {
+    margin: 0;
+    display: flex;
+    height: 100vh;
+    background-image: linear-gradient(white, #abbaab);
+}
+
+a { color: #0063b1; }
+
+.mdc-drawer-app-content {
+    flex: auto;
+    overflow: auto;
+    position: relative;
+}
+
+.mdc-slider__track--active { --mdc-theme-primary: #038387; }
+
+.mdc-slider__thumb { --mdc-theme-primary: white; }
+
+.main-content {
+    overflow: auto;
+    height: 100%;
+}
+
+.audio-player {
+    height: 90vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.img-audio-cover {
+    margin: 32px;
+    height: 250px;
+    width: 250px;
+    background-size: cover;
+}
+
+#slider-volume { width: 150px; }
+
+#slider-current-time { width: 210px; }
