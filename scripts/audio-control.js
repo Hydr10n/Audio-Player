@@ -202,6 +202,8 @@ function enableAudioControl(enable) {
 }
 
 function updatePlaylist(audioFileList) {
+    if (audioFileList.length < 1)
+        return;
     const ELEMENTS_ID_PREFIXES = {
         textAudioTitle: 'text-audio-title',
         textAudioArtists: 'text-audio-artists',
